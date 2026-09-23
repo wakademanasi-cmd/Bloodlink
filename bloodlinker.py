@@ -22,9 +22,18 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+# ============================================================
+# FIXED EDGE TITLES (Raw HTML bypasses CSS clipping)
+# ============================================================
+
+st.markdown("""
+    <div style="position: fixed; left: 15px; top: calc(15vh - 35px); font-size: 13px; font-weight: 800; color: #7f1d1d; background-color: #fecaca; padding: 5px 12px; border-radius: 20px; letter-spacing: 1px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); z-index: 999999; pointer-events: none;">DATA ENTRY</div>
+    <div style="position: fixed; right: 15px; top: calc(15vh - 35px); font-size: 13px; font-weight: 800; color: #7f1d1d; background-color: #fecaca; padding: 5px 12px; border-radius: 20px; letter-spacing: 1px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); z-index: 999999; pointer-events: none;">PROGRAM DONORS</div>
+""", unsafe_allow_html=True)
+
 
 # ============================================================
-# APPLICATION THEME
+# APPLICATION THEME & CLOUD CSS FIXES
 # ============================================================
 
 st.markdown(
@@ -57,9 +66,9 @@ st.markdown(
     }
 
     /* ======================================================
-       FIX FOR STREAMLIT CLOUD POSITIONING BUG
+       STREAMLIT CLOUD "ANTI-TRAP" FIX
        ====================================================== */
-    .stApp, .main, .block-container, [data-testid="stAppViewContainer"], [data-testid="stAppViewBlockContainer"] {
+    .stApp, .main, .block-container, [data-testid="stAppViewContainer"], [data-testid="stMainBlockContainer"], [data-testid="stVerticalBlock"] {
         transform: none !important;
         contain: none !important;
         perspective: none !important;
@@ -69,23 +78,34 @@ st.markdown(
        SPLIT EDGE NAVIGATION (Fixed Left and Right Edges)
        ====================================================== */
     
+    /* 1. Turn the parent container into an invisible fullscreen overlay */
     div[data-testid="stRadio"] {
-        position: absolute !important;
-        pointer-events: none !important;
-        z-index: 99999 !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        pointer-events: none !important; /* Lets clicks pass through to app */
+        z-index: 999998 !important;
+        background: transparent !important;
     }
 
     div[data-testid="stRadio"] div[role="radiogroup"] {
+        position: relative !important;
+        width: 100% !important;
+        height: 100% !important;
         display: block !important;
     }
 
+    /* Hide the native radio circles */
     div[data-testid="stRadio"] div[role="radiogroup"] > label > div:first-child {
         display: none !important;
     }
 
     /* Base shape for ALL collapsed edge icons */
     div[data-testid="stRadio"] div[role="radiogroup"] > label {
-        position: fixed !important;
+        position: absolute !important; /* Positions within the fullscreen overlay */
+        pointer-events: auto !important; /* Makes the buttons clickable again */
         height: 55px !important;
         width: 55px !important;
         margin: 0 !important;
@@ -95,14 +115,12 @@ st.markdown(
         transition: width 0.4s cubic-bezier(0.25, 1, 0.5, 1), background-color 0.3s ease !important;
         border: 2px solid rgba(255,255,255,0.4) !important;
         cursor: pointer !important;
-        pointer-events: auto !important;
         animation: soft-breathe 4s infinite ease-in-out !important;
     }
 
-    /* FORCE NO-WRAP TO PREVENT TEXT SQUISHING IN THE CLOUD */
+    /* FORCE TEXT NO-WRAP TO FIX CLOUD SQUISHING */
     div[data-testid="stRadio"] div[role="radiogroup"] > label * {
         white-space: nowrap !important;
-        overflow: hidden !important;
     }
 
     div[data-testid="stRadio"] div[role="radiogroup"] > label:hover,
@@ -111,36 +129,22 @@ st.markdown(
     }
 
     /* LEFT SIDE TABS (1 to 4) */
-    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-child(-n+4) {
+    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-of-type(-n+4) {
         left: 0 !important;
-        right: auto !important;
         border-radius: 0 28px 28px 0 !important;
         border-left: none !important;
-        padding: 0 10px 0 15px !important;
     }
-    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-child(-n+4) p {
-        margin: 0 0 0 10px !important;
-    }
-    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-child(-n+4):has(input:checked) {
+    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-of-type(-n+4):has(input:checked) {
         border-right: 6px solid white !important;
     }
 
     /* RIGHT SIDE TABS (5 to 8) */
-    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-child(n+5) {
+    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-of-type(n+5) {
         right: 0 !important;
-        left: auto !important; /* CRITICAL FIX: Overrides Streamlit default left: 0 */
         border-radius: 28px 0 0 28px !important;
         border-right: none !important;
-        padding: 0 15px 0 20px !important; 
-        display: flex !important;
-        justify-content: flex-end !important; 
     }
-    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-child(n+5) p {
-        text-align: right !important; 
-        width: 100% !important;
-        margin: 0 8px 0 0 !important;
-    }
-    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-child(n+5):has(input:checked) {
+    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-of-type(n+5):has(input:checked) {
         border-left: 6px solid white !important;
     }
 
@@ -157,70 +161,42 @@ st.markdown(
         width: 220px !important; 
     }
 
-    /* TEXT INSIDE NAVIGATION TABS */
+    /* TEXT ALIGNMENT TRICK FOR PERFECT EMOJIS */
     div[data-testid="stRadio"] div[role="radiogroup"] > label p {
+        position: absolute !important;
         font-size: 20px !important; 
         font-weight: 700 !important;
         color: white !important;
         line-height: 55px !important;
+        margin: 0 !important;
     }
-
-    /* "DATA ENTRY" TITLE FOR LEFT TABS */
-    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-child(1)::before {
-        content: "DATA ENTRY";
-        position: fixed;
-        left: 15px;
-        top: calc(15vh - 35px); 
-        font-size: 13px;
-        font-weight: 800;
-        color: #7f1d1d;
-        background-color: #fecaca;
-        padding: 5px 12px;
-        border-radius: 20px;
-        letter-spacing: 1px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        pointer-events: none; 
-    }
-
-    /* "PROGRAM DONORS" TITLE FOR RIGHT TABS */
-    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-child(5)::before {
-        content: "PROGRAM DONORS";
-        position: fixed;
-        right: 15px;
-        top: calc(15vh - 35px); 
-        font-size: 13px;
-        font-weight: 800;
-        color: #7f1d1d;
-        background-color: #fecaca;
-        padding: 5px 12px;
-        border-radius: 20px;
-        letter-spacing: 1px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        pointer-events: none; 
-    }
+    /* Pin left text to the left side */
+    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-of-type(-n+4) p { left: 15px !important; }
+    /* Pin right text to the right side (keeps the emoji perfectly visible) */
+    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-of-type(n+5) p { right: 15px !important; }
 
     /* VERTICAL SPACING FOR TABS */
-    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-child(1),
-    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-child(5) { top: 15vh !important; }
+    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-of-type(1),
+    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-of-type(5) { top: 15vh !important; }
 
-    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-child(2),
-    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-child(6) { top: 38vh !important; }
+    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-of-type(2),
+    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-of-type(6) { top: 38vh !important; }
 
-    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-child(3),
-    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-child(7) { top: 61vh !important; }
+    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-of-type(3),
+    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-of-type(7) { top: 61vh !important; }
 
-    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-child(4),
-    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-child(8) { top: 84vh !important; }
+    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-of-type(4),
+    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-of-type(8) { top: 84vh !important; }
 
     /* VIBRANT COLOR PALETTE */
-    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-child(1) { background-color: #e91e63 !important; }
-    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-child(2) { background-color: #2196f3 !important; }
-    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-child(3) { background-color: #4caf50 !important; }
-    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-child(4) { background-color: #ff9800 !important; }
-    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-child(5) { background-color: #9c27b0 !important; }
-    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-child(6) { background-color: #00bcd4 !important; }
-    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-child(7) { background-color: #f44336 !important; }
-    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-child(8) { background-color: #3f51b5 !important; }
+    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-of-type(1) { background-color: #e91e63 !important; }
+    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-of-type(2) { background-color: #2196f3 !important; }
+    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-of-type(3) { background-color: #4caf50 !important; }
+    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-of-type(4) { background-color: #ff9800 !important; }
+    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-of-type(5) { background-color: #9c27b0 !important; }
+    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-of-type(6) { background-color: #00bcd4 !important; }
+    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-of-type(7) { background-color: #f44336 !important; }
+    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-of-type(8) { background-color: #3f51b5 !important; }
 
 
     /* ======================================================
@@ -518,7 +494,7 @@ def allocate_blood(patient):
 # ============================================================
 
 with st.sidebar:
-    st.markdown('<div class="sidebar-brand">🩸BLOODLINK🩸</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sidebar-brand">🩸 BLOODLINK</div>', unsafe_allow_html=True)
     st.markdown('<div class="sidebar-subtitle">Smart Blood Inventory & Allocation System</div>', unsafe_allow_html=True)
 
     if st.button("🔄 Reset Demo Data", use_container_width=True):
@@ -562,7 +538,7 @@ page = st.radio(
 st.markdown(
     """
 <div class="hero">
-    <div class="hero-title">🩸BLOODLINK🩸</div>
+    <div class="hero-title">🩸 BLOODLINK</div>
     <div class="hero-subtitle">Smart Blood Inventory & Allocation System</div>
 </div>
 """,
