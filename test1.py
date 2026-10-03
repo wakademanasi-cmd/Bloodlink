@@ -66,10 +66,10 @@ st.markdown(
     }
 
     /* ======================================================
-       SPLIT EDGE NAVIGATION (Text Visibility & Alignment Fix)
+       SPLIT EDGE NAVIGATION (Ultimate Cloud Resilience Fix)
        ====================================================== */
     
-    div[data-testid="stRadio"] {
+    [data-testid="stRadio"] {
         position: absolute !important;
         width: 0px !important;
         height: 0px !important;
@@ -77,31 +77,29 @@ st.markdown(
         z-index: 999999 !important;
     }
 
-    div[data-testid="stRadio"] div[role="radiogroup"] {
-        display: block !important;
+    [data-testid="stRadio"] [role="radiogroup"] {
+        display: flex !important;
+        flex-direction: column !important;
     }
 
-    /* Hide native radio circles */
-    div[data-testid="stRadio"] div[role="radiogroup"] > label > div:first-child {
+    /* HIDE NATIVE CIRCLES (Targeting the radio input visual dot safely) */
+    [data-testid="stRadio"] [role="radiogroup"] label > div:first-child:not(:has(p)),
+    [data-testid="stRadio"] [role="radiogroup"] label input {
         display: none !important;
+        width: 0px !important;
+        height: 0px !important;
+        opacity: 0 !important;
     }
 
-    /* FORCE ABSOLUTE WHITE TEXT & VISIBILITY ON ALL INTERNAL ELEMENTS */
-    div[data-testid="stRadio"] div[role="radiogroup"] > label *,
-    div[data-testid="stRadio"] div[role="radiogroup"] > label p,
-    div[data-testid="stRadio"] div[role="radiogroup"] > label span,
-    div[data-testid="stRadio"] div[role="radiogroup"] > label div {
-        color: #ffffff !important;
-        fill: #ffffff !important;
-    }
-
-    /* Base tab styling */
-    div[data-testid="stRadio"] div[role="radiogroup"] > label {
+    /* BASE TAB STYLING */
+    [data-testid="stRadio"] [role="radiogroup"] label {
         position: fixed !important;
         height: 55px !important;
         width: 55px !important;
         margin: 0 !important;
+        padding: 0 !important;
         display: flex !important;
+        flex-direction: row !important;
         align-items: center !important;
         overflow: hidden !important; 
         transition: width 0.4s cubic-bezier(0.25, 1, 0.5, 1), background-color 0.3s ease !important;
@@ -112,50 +110,92 @@ st.markdown(
         animation: soft-breathe 4s infinite ease-in-out !important;
     }
 
-    div[data-testid="stRadio"] div[role="radiogroup"] > label:hover,
-    div[data-testid="stRadio"] div[role="radiogroup"] > label:has(input:checked) {
-        animation: none !important;
-        width: 220px !important;
+    /* FORCE TEXT HORIZONTAL (Fixes the vertical stacking) */
+    [data-testid="stRadio"] [role="radiogroup"] label div,
+    [data-testid="stRadio"] [role="radiogroup"] label p,
+    [data-testid="stRadio"] [role="radiogroup"] label span {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        white-space: nowrap !important;
+        word-break: keep-all !important;
+        color: #ffffff !important;
+        fill: #ffffff !important;
     }
 
-    /* LEFT SIDE TABS (1 to 4) */
-    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-of-type(1) { left: 0 !important; top: 15vh !important; border-radius: 0 28px 28px 0 !important; border-left: none !important; }
-    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-of-type(2) { left: 0 !important; top: 38vh !important; border-radius: 0 28px 28px 0 !important; border-left: none !important; }
-    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-of-type(3) { left: 0 !important; top: 61vh !important; border-radius: 0 28px 28px 0 !important; border-left: none !important; }
-    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-of-type(4) { left: 0 !important; top: 84vh !important; border-radius: 0 28px 28px 0 !important; border-left: none !important; }
-
-    /* RIGHT SIDE TABS (5 to 8) */
-    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-of-type(5) { right: 0 !important; top: 15vh !important; border-radius: 28px 0 0 28px !important; border-right: none !important; }
-    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-of-type(6) { right: 0 !important; top: 38vh !important; border-radius: 28px 0 0 28px !important; border-right: none !important; }
-    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-of-type(7) { right: 0 !important; top: 61vh !important; border-radius: 28px 0 0 28px !important; border-right: none !important; }
-    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-of-type(8) { right: 0 !important; top: 84vh !important; border-radius: 28px 0 0 28px !important; border-right: none !important; }
-
-    /* ACTIVE BORDERS */
-    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-of-type(-n+4):has(input:checked) { border-right: 6px solid white !important; }
-    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-of-type(n+5):has(input:checked) { border-left: 6px solid white !important; }
-
-    /* PADDING FOR TEXT PLACEMENT */
-    div[data-testid="stRadio"] div[role="radiogroup"] > label p {
+    [data-testid="stRadio"] [role="radiogroup"] label p {
         font-size: 18px !important; 
         font-weight: 700 !important;
         margin: 0 !important;
-        white-space: nowrap !important;
         padding-left: 14px !important;
     }
 
-    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-of-type(n+5) p {
-        padding-left: 10px !important;
+    /* ==========================================
+       POSITIONING & COLORS (Covers all Streamlit DOM versions)
+       ========================================== */
+    
+    /* ITEM 1 */
+    [data-testid="stRadio"] [role="radiogroup"] > label:nth-child(1),
+    [data-testid="stRadio"] [role="radiogroup"] > div:nth-child(1) label { left: 0 !important; right: auto !important; top: 15vh !important; border-radius: 0 28px 28px 0 !important; border-left: none !important; background-color: #e91e63 !important; }
+    
+    /* ITEM 2 */
+    [data-testid="stRadio"] [role="radiogroup"] > label:nth-child(2),
+    [data-testid="stRadio"] [role="radiogroup"] > div:nth-child(2) label { left: 0 !important; right: auto !important; top: 38vh !important; border-radius: 0 28px 28px 0 !important; border-left: none !important; background-color: #2196f3 !important; }
+
+    /* ITEM 3 */
+    [data-testid="stRadio"] [role="radiogroup"] > label:nth-child(3),
+    [data-testid="stRadio"] [role="radiogroup"] > div:nth-child(3) label { left: 0 !important; right: auto !important; top: 61vh !important; border-radius: 0 28px 28px 0 !important; border-left: none !important; background-color: #4caf50 !important; }
+
+    /* ITEM 4 */
+    [data-testid="stRadio"] [role="radiogroup"] > label:nth-child(4),
+    [data-testid="stRadio"] [role="radiogroup"] > div:nth-child(4) label { left: 0 !important; right: auto !important; top: 84vh !important; border-radius: 0 28px 28px 0 !important; border-left: none !important; background-color: #ff9800 !important; }
+
+    /* ITEM 5 */
+    [data-testid="stRadio"] [role="radiogroup"] > label:nth-child(5),
+    [data-testid="stRadio"] [role="radiogroup"] > div:nth-child(5) label { right: 0 !important; left: auto !important; top: 15vh !important; border-radius: 28px 0 0 28px !important; border-right: none !important; background-color: #9c27b0 !important; }
+    [data-testid="stRadio"] [role="radiogroup"] > label:nth-child(5) p,
+    [data-testid="stRadio"] [role="radiogroup"] > div:nth-child(5) label p { padding-left: 10px !important; }
+
+    /* ITEM 6 */
+    [data-testid="stRadio"] [role="radiogroup"] > label:nth-child(6),
+    [data-testid="stRadio"] [role="radiogroup"] > div:nth-child(6) label { right: 0 !important; left: auto !important; top: 38vh !important; border-radius: 28px 0 0 28px !important; border-right: none !important; background-color: #00bcd4 !important; }
+    [data-testid="stRadio"] [role="radiogroup"] > label:nth-child(6) p,
+    [data-testid="stRadio"] [role="radiogroup"] > div:nth-child(6) label p { padding-left: 10px !important; }
+
+    /* ITEM 7 */
+    [data-testid="stRadio"] [role="radiogroup"] > label:nth-child(7),
+    [data-testid="stRadio"] [role="radiogroup"] > div:nth-child(7) label { right: 0 !important; left: auto !important; top: 61vh !important; border-radius: 28px 0 0 28px !important; border-right: none !important; background-color: #f44336 !important; }
+    [data-testid="stRadio"] [role="radiogroup"] > label:nth-child(7) p,
+    [data-testid="stRadio"] [role="radiogroup"] > div:nth-child(7) label p { padding-left: 10px !important; }
+
+    /* ITEM 8 */
+    [data-testid="stRadio"] [role="radiogroup"] > label:nth-child(8),
+    [data-testid="stRadio"] [role="radiogroup"] > div:nth-child(8) label { right: 0 !important; left: auto !important; top: 84vh !important; border-radius: 28px 0 0 28px !important; border-right: none !important; background-color: #3f51b5 !important; }
+    [data-testid="stRadio"] [role="radiogroup"] > label:nth-child(8) p,
+    [data-testid="stRadio"] [role="radiogroup"] > div:nth-child(8) label p { padding-left: 10px !important; }
+
+    /* HOVER & ACTIVE EFFECTS */
+    [data-testid="stRadio"] [role="radiogroup"] label:hover { 
+        width: 220px !important; 
+        box-shadow: 0 8px 20px rgba(0,0,0,0.25) !important;
+        animation: none !important;
+    }
+    
+    [data-testid="stRadio"] [role="radiogroup"] label:has(input:checked) { 
+        width: 65px !important; 
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3) !important;
+        animation: none !important;
     }
 
-    /* VIBRANT COLOR PALETTE */
-    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-of-type(1) { background-color: #e91e63 !important; }
-    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-of-type(2) { background-color: #2196f3 !important; }
-    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-of-type(3) { background-color: #4caf50 !important; }
-    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-of-type(4) { background-color: #ff9800 !important; }
-    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-of-type(5) { background-color: #9c27b0 !important; }
-    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-of-type(6) { background-color: #00bcd4 !important; }
-    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-of-type(7) { background-color: #f44336 !important; }
-    div[data-testid="stRadio"] div[role="radiogroup"] > label:nth-of-type(8) { background-color: #3f51b5 !important; }
+    [data-testid="stRadio"] [role="radiogroup"] label:has(input:checked):hover { 
+        width: 220px !important; 
+    }
+
+    [data-testid="stRadio"] [role="radiogroup"] > label:nth-child(-n+4):has(input:checked),
+    [data-testid="stRadio"] [role="radiogroup"] > div:nth-child(-n+4) label:has(input:checked) { border-right: 6px solid white !important; }
+    
+    [data-testid="stRadio"] [role="radiogroup"] > label:nth-child(n+5):has(input:checked),
+    [data-testid="stRadio"] [role="radiogroup"] > div:nth-child(n+5) label:has(input:checked) { border-left: 6px solid white !important; }
 
 
     /* ======================================================
@@ -467,10 +507,10 @@ page = st.radio(
         "👤 Patient", 
         "🩸 Inventory", 
         "⚡ Allocate", 
-        "📋Queue ", 
-        "📚Stack ", 
-        "⏳Alerts ", 
-        "📊Analytics "
+        "Queue 📋", 
+        "Stack 📚", 
+        "Alerts ⏳", 
+        "Analytics 📊"
     ],
     label_visibility="collapsed"
 )
